@@ -1,0 +1,67 @@
+{
+    "root": true,
+    "env": {
+        "node": true,
+        "browser": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:astro/recommended"
+    ],
+    "overrides": [
+        {
+            "files": ["**/*.astro"],
+            "parser": "astro-eslint-parser",
+            "parserOptions": {
+                "parser": "@typescript-eslint/parser",
+                "extraFileExtensions": [".astro"],
+                "sourceType": "module"
+            },
+            "rules": {
+                "import/extensions": "off",
+                "@typescript-eslint/comma-dangle": "off",
+                "@typescript-eslint/consistent-type-imports": "error",
+                "import/prefer-default-export": "off",
+                "tailwindcss/classnames-order": [
+                    "warn",
+                    {
+                        "officialSorting": true
+                    }
+                ],
+                "simple-import-sort/imports": "error",
+                "simple-import-sort/exports": "error",
+                "@typescript-eslint/no-unused-vars": "off",
+                "unused-imports/no-unused-imports": "error",
+                "unused-imports/no-unused-vars": [
+                    "error",
+                    {
+                        "argsIgnorePattern": "^_"
+                    }
+                ],
+                "import/no-extraneous-dependencies": "off",
+                "no-empty": ["error", { "allowEmptyCatch": true }]
+            }
+        },
+        {
+            "files": ["**/*.ts", "**/*.tsx"],
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                "project": "./tsconfig.json"
+            },
+            "rules": {
+                "@typescript-eslint/triple-slash-reference": "off"
+            }
+        }
+    ],
+    "plugins": [
+        "@typescript-eslint",
+        "unused-imports",
+        "tailwindcss",
+        "simple-import-sort",
+        "import"
+    ],
+    "globals": {
+        "Astro": "readonly"
+    }
+}

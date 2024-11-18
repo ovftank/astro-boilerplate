@@ -1,0 +1,57 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import { navItems } from '@/config/navigation';
+
+import Logo from './shared/logo.astro';
+
+const fallbackPath = Astro.url.pathname;
+const netlifyPath = Astro.locals.netlify?.context?.url
+    ? new URL(Astro.locals.netlify.context.url).pathname
+    : null;
+const currentPath = netlifyPath ?? fallbackPath;
+---
+
+<aside
+    id="drawer"
+    class:list={[
+        'fixed inset-y-0 left-0 z-50 w-64 -translate-x-full transform border-r border-gray-200 bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out'
+    ]}
+    data-drawer
+>
+    <div class="mb-8">
+        <Logo />
+    </div>
+
+    <nav>
+        <ul class="space-y-2">
+            {
+                navItems.map(({ path, label, icon }) => (
+                    <li>
+                        <a
+                            href={path}
+                            class:list={[
+                                'flex items-center space-x-3 rounded-lg px-4 py-3 transition-all duration-200 hover:bg-blue-50',
+                                {
+                                    'bg-blue-50/80 font-medium text-blue-600':
+                                        currentPath === path,
+                                    'text-gray-600 hover:text-blue-600':
+                                        currentPath !== path
+                                }
+                            ]}
+                            aria-current={
+                                currentPath === path ? 'page' : undefined
+                            }
+                            data-astro-prefetch={
+                                path === '/about' ? 'false' : 'load'
+                            }
+                        >
+                            <Icon name={icon} class="size-5" />
+                            <span>{label}</span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </nav>
+</aside>

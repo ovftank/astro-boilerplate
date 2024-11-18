@@ -1,0 +1,152 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import Drawer from '@/components/drawer.astro';
+import Favicon from '@/components/favicon.astro';
+import Header from '@/components/header.astro';
+interface Props {
+    title: string;
+    description?: string;
+}
+const getOgImage = async () => {
+    const domain = new URL(Astro.url.href).origin;
+    const image = domain + '/og-image.png';
+    return image;
+};
+const { title, description = 'XinChào' } = Astro.props;
+const imageAlt = 'XinChào Website';
+const canonicalURL = Astro.url.href;
+
+const imageUrl = await getOgImage();
+
+const city = Astro.locals.netlify?.context.geo?.city ?? 'Local';
+Astro.response.headers.set('Cache-Control', 'public, max-age=31536000');
+---
+
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <Favicon />
+
+        <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:alt" content={imageAlt} />
+        <meta property="og:image:width" content="1280" />
+        <meta property="og:image:height" content="720" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={canonicalURL} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:image" content={imageUrl} />
+        <meta property="twitter:image:alt" content={imageAlt} />
+
+        <link rel="canonical" href={canonicalURL} />
+
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="theme-color" content="#ffffff" />
+
+        <script
+            is:inline
+            type="application/ld+json"
+            set:html={JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: title,
+                description: description,
+                url: canonicalURL
+            })}
+        />
+    </head>
+    <body>
+        <Header />
+        <Drawer />
+        <main>
+            <div class="container mx-auto p-4">
+                <div
+                    class="space-y-3 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-4 shadow-sm"
+                >
+                    <p class="flex items-center gap-2 text-gray-700">
+                        <Icon
+                            name="mdi:map-marker"
+                            class="h-5 w-5 text-blue-500"
+                        />
+                        <span class="font-medium">Xin chào, người dùng từ</span>
+                        <span class="font-semibold text-blue-600">{city}</span>
+                    </p>
+                </div>
+
+                <slot>
+                    <div
+                        class="fixed left-0 right-0 top-0 z-50 h-0.5 animate-[slide_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-blue-500 to-transparent"
+                    >
+                    </div>
+                </slot>
+            </div>
+        </main>
+
+        <script>
+            declare global {
+                interface Window {
+                    drawerState: {
+                        isOpen: boolean;
+                        toggle(): void;
+                    };
+                }
+            }
+
+            if (!window.drawerState) {
+                window.drawerState = {
+                    isOpen: false,
+                    toggle() {
+                        this.isOpen = !this.isOpen;
+                        document.dispatchEvent(
+                            new CustomEvent('drawer-toggle', {
+                                detail: { isOpen: this.isOpen }
+                            })
+                        );
+                    }
+                };
+            }
+
+            const setupDrawer = () => {
+                const drawer = document.querySelector('[data-drawer]');
+                window.drawerState.isOpen = false;
+                drawer?.classList.add('-translate-x-full');
+                drawer?.classList.remove('translate-x-0');
+
+                const handleDrawerToggle = (event: Event) => {
+                    const customEvent = event as CustomEvent<{
+                        isOpen: boolean;
+                    }>;
+                    const { isOpen } = customEvent.detail;
+                    if (!isOpen) {
+                        drawer?.classList.add('-translate-x-full');
+                        drawer?.classList.remove('translate-x-0');
+                    } else {
+                        drawer?.classList.remove('-translate-x-full');
+                        drawer?.classList.add('translate-x-0');
+                    }
+                };
+
+                document.removeEventListener(
+                    'drawer-toggle',
+                    handleDrawerToggle
+                );
+                document.addEventListener('drawer-toggle', handleDrawerToggle);
+            };
+
+            setupDrawer();
+        </script>
+    </body>
+</html>

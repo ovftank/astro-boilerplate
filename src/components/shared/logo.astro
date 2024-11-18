@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+
+import { getOptimizedLogo } from '@/components/shared/optimized-logo';
+interface Props {
+    className?: string;
+}
+
+const { className = '' } = Astro.props;
+const optimizedLogo = await getOptimizedLogo();
+---
+
+<a
+    href="/"
+    class:list={[
+        'flex items-center space-x-3 transition-opacity hover:opacity-80',
+        className
+    ]}
+    aria-label="XinChào - Return to homepage"
+>
+    <Image
+        src={optimizedLogo.src}
+        alt="XinChào Logo"
+        width={72}
+        height={72}
+        class="size-9 rounded-full ring-2 ring-blue-500 ring-offset-2"
+        loading="eager"
+        format="webp"
+        quality={80}
+        decoding="async"
+        fetchpriority="high"
+    />
+    <span
+        class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-xl font-bold text-transparent"
+    >
+        XinChào
+    </span>
+</a>
+
+<script>
+    const logoUrl = document
+        .querySelector('a[aria-label="XinChào - Return to homepage"] img')
+        ?.getAttribute('src');
+    if (logoUrl && 'caches' in window) {
+        caches.open('site-assets').then((cache) => {
+            cache.match(logoUrl).then((response) => {
+                if (!response) {
+                    cache.add(logoUrl).catch((error) => {
+                        console.warn('Failed to cache logo:', error);
+                    });
+                }
+            });
+        });
+    }
+</script>

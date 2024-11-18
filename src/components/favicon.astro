@@ -1,0 +1,36 @@
+---
+import { getOptimizedFavicon } from '@/components/shared/optimized-logo';
+const domain = new URL(Astro.url.href).origin;
+const optimizedLogo = await getOptimizedFavicon();
+---
+
+<link
+    rel="icon"
+    href={domain + optimizedLogo.src}
+    type="image/png"
+    sizes="180x180"
+    fetchpriority="high"
+    crossorigin="anonymous"
+/>
+<link
+    rel="apple-touch-icon"
+    href={domain + optimizedLogo.src}
+    sizes="180x180"
+/>
+
+<script>
+    const faviconUrl = document
+        .querySelector('link[rel="icon"]')
+        ?.getAttribute('href');
+    if (faviconUrl && 'caches' in window) {
+        caches.open('site-favicon').then((cache) => {
+            cache.match(faviconUrl).then((response) => {
+                if (!response) {
+                    cache.add(faviconUrl).catch((error) => {
+                        console.warn('Failed to cache favicon:', error);
+                    });
+                }
+            });
+        });
+    }
+</script>

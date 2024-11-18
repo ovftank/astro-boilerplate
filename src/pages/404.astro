@@ -1,0 +1,75 @@
+---
+import MainLayout from '@/layouts/main-layout.astro';
+---
+
+<MainLayout title="404 - Không Tìm Thấy Trang">
+    <div
+        class="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 text-center"
+    >
+        <div class="mb-8 w-64">
+            <svg
+                viewBox="0 0 200 160"
+                class="w-full"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect
+                    x="40"
+                    y="40"
+                    width="120"
+                    height="100"
+                    rx="20"
+                    fill="#818CF8"></rect>
+
+                <circle cx="80" cy="80" r="15" fill="white"></circle>
+                <circle cx="120" cy="80" r="15" fill="white"></circle>
+                <circle cx="80" cy="80" r="8" fill="#1F2937"></circle>
+                <circle cx="120" cy="80" r="8" fill="#1F2937"></circle>
+
+                <path
+                    d="M70 110 Q100 130 130 110"
+                    stroke="white"
+                    stroke-width="5"
+                    stroke-linecap="round"></path>
+
+                <line
+                    x1="100"
+                    y1="30"
+                    x2="100"
+                    y2="40"
+                    stroke="#818CF8"
+                    stroke-width="6"></line>
+                <circle cx="100" cy="25" r="5" fill="#EC4899"></circle>
+            </svg>
+        </div>
+
+        <h1 class="mb-4 text-2xl font-bold text-gray-800">
+            Trang này không tồn tại
+        </h1>
+        <div class="mb-6 flex items-center justify-center space-x-4">
+            <a
+                href="/"
+                class="inline-block rounded-full bg-blue-600 px-6 py-3 font-medium text-white transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Về Trang Chủ
+            </a>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .animate-pulse {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>

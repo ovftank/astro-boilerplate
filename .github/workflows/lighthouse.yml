@@ -1,0 +1,39 @@
+name: 'Lighthouse-Badger'
+
+on:
+    schedule:
+        - cron: '55 23 * * 0'
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    lighthouse-badger:
+        runs-on: ubuntu-22.04
+        timeout-minutes: 8
+
+        steps:
+            - name: Wait for 2 minutes after push
+              if: github.event_name == 'push'
+              run: sleep 120
+
+            - uses: actions/checkout@v4
+              with:
+                  repository: 'ovftank/astro-boilerplate'
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  ref: 'main'
+
+            - uses: actions/checkout@v4
+              with:
+                  repository: 'myactionway/lighthouse-badges'
+                  path: temp_lighthouse_badges_nested
+
+            - uses: myactionway/lighthouse-badger-action@v2.2
+              with:
+                  urls: 'https://demo-astro.ovfteam.com'
+                  audit_type: 'desktop'
+                  mobile_lighthouse_params: '--throttling.cpuSlowdownMultiplier=1'
+                  desktop_lighthouse_params: '--preset=desktop --throttling.cpuSlowdownMultiplier=1'
+                  commit_message: '[skip netlify]'
